@@ -66,14 +66,28 @@ public class PostAdsTest {
     @ParameterizedTest
     @ValueSource(strings = {
             // invalid name values
-            "{ \"name\": -10, \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
-            "{ \"name\": null, \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
-            "{ \"name\": \"\", \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
-            "{ \"name\": \" \", \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
-            "{ \"name\": \"@@@@!!!\", \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
-            "{ \"name\": [\"Телефон\"], \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
-            "{ \"name\": { \"type\": \"Телефон\" }, \"price\": 85566, \"sellerId\": 600100, \"statistics\": { \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}",
+            "{ \"name\": -10, \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", // negative number
+
+            "{ \"name\": null, \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", // null
+
+            "{ \"name\": \"\", \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", // empty string
+
+            "{ \"name\": \" \", \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", // space
+
+            "{ \"name\": \"@@@@!!!\", \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", //  special characters
+
+            "{ \"name\": [\"Телефон\"], \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", //array
+
+            "{ \"name\": { \"type\": \"Телефон\" }, \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}" //object
     })
+
     public void shouldReturn400WhenNameIsInvalid(String requestBody) {
         System.out.println("Request body is the following: " + "\n" + requestBody);
 
@@ -117,6 +131,9 @@ public class PostAdsTest {
 
             "{ \"name\": \"Телефон\", \"price\": 10 10, \"sellerId\": 600100, \"statistics\": " +
                     "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", // separate numbers
+
+            "{ \"name\": \"Телефон\", \"price\": 10.5, \"sellerId\": 600100, \"statistics\": " +
+                    "{ \"contacts\": 32, \"likes\": 35, \"viewCount\": 14 }}", // float numbers
 
     })
     public void shouldReturn400WhenPriceIsInvalid(String requestBody) {
@@ -183,7 +200,7 @@ public class PostAdsTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            //invalid sellerIds
+            //invalid contacts
             "{ \"name\": \"Телефон\", \"price\": 85566, \"sellerId\": 600100, \"statistics\": " +
                     "{ \"contacts\": -10, \"likes\": 35, \"viewCount\": 14 }}", // negative number
 
@@ -347,7 +364,7 @@ public class PostAdsTest {
                 .post("/api/1/item")  // Выполняем POST-запрос
                 .then()
                 .log().body()
-                .statusCode(400);  // Ожидаем, что сервер вернёт 415 Unsupported Media Type
+                .statusCode(400);
     }
 }
 
