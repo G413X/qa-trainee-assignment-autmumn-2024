@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -26,6 +25,7 @@ public class GetSellersAdsTest {
 
         Check that all seller's ads have the same matching sellerId:
         """);
+        System.out.println("sellerID is: " + sellerID);
 
         // Выполняем GET запрос и десериализуем только поле sellerId
         Response response =
@@ -84,7 +84,7 @@ public class GetSellersAdsTest {
             1000000
             })
     public void shouldNotReturn200WhenSellerIdIsInvalid(int sellerID) {
-        System.out.println("\n" + "Check that response status codes are NOT 200 for Invalid sellerID: "
+        System.out.println("\n" + "Check that response status code is NOT 200 for Invalid sellerID: "
                 + sellerID);
 
         given()
@@ -128,6 +128,24 @@ public class GetSellersAdsTest {
                 .body("$", instanceOf(List.class))
                 .body("$", hasSize(greaterThanOrEqualTo(0)));
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"})
+    public void shouldReturn405ForInvalidHttpMethods(String method) {
+        String sellerID = "3452";  // Используем тестовый ID продавца
+        System.out.println("Request method is the following: " + method);
+
+        given()
+                .pathParam("sellerID", sellerID)
+                .when()
+                .request(method, "/api/1/{sellerID}/item")  // Используем разные HTTP-методы
+                .then()
+                .log().body()
+                .statusCode(405);  // Ожидаем 405 Method Not Allowed
+
+        System.out.println("PASS" + "\n");
+    }
+
 }
 
 

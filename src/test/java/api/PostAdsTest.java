@@ -324,9 +324,31 @@ public class PostAdsTest {
                 .statusCode(405);  // Ожидаем 405 Method Not Allowed
 
         System.out.println("PASS" + "\n");
-
     }
 
+    @Test
+    public void shouldReturn400ForInvalidContentType() {
+        String requestBody = "{\n" +
+                "  \"name\": \"Телефон\",\n" +
+                "  \"price\": 10,\n" +
+                "  \"sellerId\": 600100,\n" +
+                "  \"statistics\": {\n" +
+                "    \"contacts\": 100,\n" +
+                "    \"likes\": 24,\n" +
+                "    \"viewCount\": 14\n" +
+                "  }\n" +
+                "}";
+
+        given()
+                .header("Content-Type", "text/plain")  // Указываем неправильный Content-Type
+                .header("Accept", "application/json")
+                .body(requestBody)  // Передаём тело запроса
+                .when()
+                .post("/api/1/item")  // Выполняем POST-запрос
+                .then()
+                .log().body()
+                .statusCode(400);  // Ожидаем, что сервер вернёт 415 Unsupported Media Type
+    }
 }
 
 
