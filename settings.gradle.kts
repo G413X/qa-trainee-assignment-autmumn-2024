@@ -1,2 +1,1 @@
-rootProject.name = "test-project"
-
+rootProject.name = "qa-trainee-assignment-autmumn-2024"
