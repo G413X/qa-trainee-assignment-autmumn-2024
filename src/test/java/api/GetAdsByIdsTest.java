@@ -31,7 +31,7 @@ public class GetAdsByIdsTest {
 
         System.out.println("""
 
-        GET response for existing id: " + validIDs + " is OK
+        GET response for existing id is OK
         """);
     }
 
@@ -54,7 +54,7 @@ public class GetAdsByIdsTest {
 
         System.out.println("""
              
-            GET response for invalid \"\" returns 404 - OK
+            GET response for invalid \"\" id returns 404 - OK
             """);
     }
 
@@ -120,6 +120,23 @@ public class GetAdsByIdsTest {
          
             Response ad ID matches request ad ID - OK
             """);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"})
+    public void shouldReturn405ForInvalidHttpMethodsOnGetAd(String method) {
+        String adId = "d3523e5d-2c17-46b7-857e-cd59f79a1598";
+        System.out.println("Request method is the following: " + method);
+
+        given()
+                .pathParam("id", adId)
+                .when()
+                .request(method, "/item/{id}")  // Используем разные HTTP-методы
+                .then()
+                .log().status()
+                .statusCode(405);  // Ожидаем 405 Method Not Allowed
+
+        System.out.println("PASS" + "\n");
     }
 }
 
